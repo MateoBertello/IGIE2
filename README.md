@@ -2,34 +2,34 @@
 
 ## 📋 Descripción del Proyecto
 
-Este proyecto forma parte de la materia Interfaz Gráfica. El objetivo es tomar un juego de batalla por turnos (de la 1° IE) y mejorarlo aplicando: 
+Este proyecto es parte de la materia **Interfaz Gráfica** y tiene como objetivo mejorar la batalla implementando una arquitectura **MVC (Modelo-Vista-Controlador)**, con énfasis en el uso de **herencia**, **polimorfismo**, **encapsulamiento**, **arrays** y **manipulación de Strings**. 
 
-Una arquitectura Modelo-Vista-Controlador (MVC)
+A través de una interfaz interactiva, se busca proporcionar una experiencia de juego dinámica, integrando funcionalidades de configuración de personajes, estadísticas y almacenamiento de partidas.
 
-Las nuevas funcionalidades clave a implementar incluyen:
+**Objetivo del Proyecto:**
+- Reestructurar el proyecto original a arquitectura **MVC**.
+- Implementar ventanas de configuración y un sistema de reporte completo.
+- Añadir un sistema de persistencia de datos.
 
-Una Ventana de Configuración Inicial para registrar jugadores y ajustar las reglas de la partida.
-
-Una Ventana Principal de Juego para mostrar la batalla, la vida/bendición de los personajes y un log de eventos en tiempo real.
-
-
-
-Un Sistema de Persistencia para guardar y cargar el estado de una partida.
-
-Una Ventana de Reporte Final con estadísticas detalladas y rankings.
-Video Explicativo
+**Video Explicativo:**
+[Enlace al video](#)
 
 
 
 ## 👥 Integrantes del Equipo
 
 - **[Bertello Mateo]** - [ Reestructurar el proyecto en arquitectura MVC] Prompts: https://gemini.google.com/share/c8aa91fa9427
+- **[Federico Terradas]** - 
 
 
 
-**🔨 Trabajando en IE - Interfaz Gráfica**
+## 🔨 Funcionalidades Implementadas
 
-El proyecto se encuentra actualmente en desarrollo. Se están implementando las funcionalidades de Ataque Supremo, Historial de Batallas, Sistemas de Apodos y Validacion, Sistema de Reportes
+- Reestructuración del proyecto a arquitectura **MVC**.
+- **Ventana de Configuración Inicial**: Permite registrar jugadores, asignar características y validar configuraciones.
+- **Ventana Principal de Juego**: Información dinámica sobre el estado de los personajes, estadísticas y eventos en la batalla.
+- **Reporte Final**: Resumen con estadísticas detalladas, ranking y el historial de batallas.
+- **Persistencia de Datos**: Guardado y carga de partidas usando archivos de texto.
 
 
 
