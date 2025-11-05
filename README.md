@@ -19,7 +19,8 @@ A través de una interfaz interactiva, se busca proporcionar una experiencia de 
 ## 👥 Integrantes del Equipo
 
 - **[Bertello Mateo]** - [ Reestructurar el proyecto en arquitectura MVC] Prompts: https://gemini.google.com/share/c8aa91fa9427
-- **[Federico Terradas]** - 
+- **[Federico Terradas]** -
+- **[Lucas Babreris]**-
 
 
 
