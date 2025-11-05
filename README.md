@@ -2,8 +2,21 @@
 
 ## 📋 Descripción del Proyecto
 
-Este proyecto forma parte de la materia **Interfaz Grafica** y se enfoca en el desarrollo de mejorar la batalla aplicando herencia, polimorfismo, encapsulamiento, arrays y manipulación de Strings
+Este proyecto forma parte de la materia Interfaz Gráfica. El objetivo es tomar un juego de batalla por turnos (de la 1° IE) y mejorarlo aplicando: 
 
+Una arquitectura Modelo-Vista-Controlador (MVC)
+
+Las nuevas funcionalidades clave a implementar incluyen:
+
+Una Ventana de Configuración Inicial para registrar jugadores y ajustar las reglas de la partida.
+
+Una Ventana Principal de Juego para mostrar la batalla, la vida/bendición de los personajes y un log de eventos en tiempo real.
+
+
+
+Un Sistema de Persistencia para guardar y cargar el estado de una partida.
+
+Una Ventana de Reporte Final con estadísticas detalladas y rankings.
 Video Explicativo
 
 
@@ -24,10 +37,26 @@ El proyecto se encuentra actualmente en desarrollo. Se están implementando las 
 ## 📁 Estructura del Proyecto
 
 ```
-IGIE1/
-├── src/IE.java
-├── img/
-└── README.md
+IEIG2/
+├── src/
+│   ├── ieig2/
+│   │   └── IEIG2.java             
+│   │
+│   ├── ieig2/modelo/
+│   │   ├── Personaje.java          
+│   │   ├── Heroe.java
+│   │   ├── Villano.java
+│   │   ├── Arma.java
+│   │   ├── Apodo.java
+│   │   ├── Validacion.java
+│   │   └── HistorialBatallas.java  
+│   │
+│   ├── ieig2/vista/
+│   │   ├── BatallaVistaConsola.java       
+│   │
+│   └── ieig2/controlador/
+       └── BatallaControlador.java 
+
 ```
 
 ## 🚀 Instalación y Uso
