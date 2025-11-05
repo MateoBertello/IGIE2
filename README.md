@@ -18,7 +18,7 @@ Video Explicativo
 
 El proyecto se encuentra actualmente en desarrollo. Se están implementando las funcionalidades de Ataque Supremo, Historial de Batallas, Sistemas de Apodos y Validacion, Sistema de Reportes
 
-![Pantallazo del juego](img/captura.png)
+
 
 
 ## 📁 Estructura del Proyecto
@@ -34,7 +34,7 @@ IGIE1/
 
 ```bash
 # Clonar el repositorio
-git clone https://github.com/JoakoBallesteros/IGIE1.git
+git clone https://github.com/MateoBertello/IGIE2.git
 
 # Navegar al directorio
 cd IGIE2
