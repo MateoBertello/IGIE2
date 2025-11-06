@@ -2,10 +2,11 @@ package ieig2.vista;
 
 import java.util.Scanner;
 import ieig2.modelo.Heroe;
-import ieig2.modelo.Villano; 
+import ieig2.modelo.Villano;
+
 /**
- * La Vista. Se encarga ÚNICAMENTE de mostrar cosas en la consola
- * y de pedir datos al usuario (System.out y Scanner).
+ * La Vista. Se encarga ÚNICAMENTE de mostrar cosas en la consola y de pedir
+ * datos al usuario (System.out y Scanner).
  */
 public class BatallaVistaConsola {
 
@@ -57,13 +58,22 @@ public class BatallaVistaConsola {
      * Cierra el Scanner.
      */
     public void cerrarScanner() {
-        // TODO: Llama a sc.close()
+        try {
+            if (sc != null) {
+                sc.close();
+            }
+        } catch (Exception ignored) {
+        }
     }
 
     /**
      * Método de utilidad para pausar la consola.
      */
     public void pausa(int milisegundos) {
-        // TODO: Copia y pega el código del Thread.sleep(...) de tu antiguo IEIG1.java
+        try {
+            Thread.sleep(milisegundos);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 }

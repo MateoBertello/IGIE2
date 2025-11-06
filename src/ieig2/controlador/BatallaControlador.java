@@ -31,6 +31,37 @@ public class BatallaControlador {
      * Método principal que inicia todo el flujo del juego.
      * Reemplaza al antiguo 'main'.
      */
+    
+    public void iniciarBatallaCon(Heroe h, Villano v) {
+    this.heroe = h;
+    this.villano = v;
+
+    vista.mostrarMensaje("\n⚔️ ¡Comienza la batalla! ⚔️");
+    vista.mostrarEstadoPersonajes(heroe, villano);
+
+    int turno = 0;
+    while (heroe.estaVivo() && villano.estaVivo()) {
+        turno++;
+
+        // Turno del Héroe
+        String logHeroe = heroe.decidirAccion(villano);
+        vista.mostrarMensaje(logHeroe);
+        if (!villano.estaVivo()) break;
+
+        // Turno del Villano
+        String logVillano = villano.decidirAccion(heroe);
+        vista.mostrarMensaje(logVillano);
+
+        // Fin de turno
+        vista.mostrarMensaje("\n--- Fin del Turno " + turno + " ---");
+        vista.mostrarEstadoPersonajes(heroe, villano);
+    }
+
+    finalizarBatalla(turno);
+}
+    
+    
+   
     public void iniciarBatalla() {
         
         setupBatalla(); // 1. Prepara la batalla (crea personajes)
