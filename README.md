@@ -32,7 +32,10 @@ A través de una interfaz interactiva, se busca proporcionar una experiencia de 
 - **Reporte Final**: Resumen con estadísticas detalladas, ranking y el historial de batallas.
 - **Persistencia de Datos**: Guardado y carga de partidas usando archivos de texto.
 
+##  Capturas
+Configuracion Inicial
 
+![Pantallazo del juego](img/captura.png)
 
 
 ## 📁 Estructura del Proyecto
