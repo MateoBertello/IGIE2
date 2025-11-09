@@ -4,37 +4,46 @@
  */
 package ieig2.modelo;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
  * Clase encargada de manejar la persistencia de datos (Punto 5).
- * Utiliza archivos de texto para guardar el historial y el estado de partida.
+ * Archivos sugeridos por la consigna:
+ *  - historial_batallas.txt   (ultimas 5 batallas + numero global)
+ *  - batalla_guardada.txt     (estado actual completo para reanudar)
+ *  - personajes.txt           (estadísticas permanentes)
+ *
+ * Nota: esta implementación usa acceso directo a campos protegidos de Personaje
+ * (fuerza, defensa, bendicion) por estar en el mismo paquete ieig2.modelo.
  */
 public class PersistenciaManager {
 
-    private static final String HISTORIAL_FILE = "historial_batallas.txt";
-    private static final String PARTIDA_FILE   = "batalla_guardada.txt";
+    private static final String HISTORIAL_FILE  = "historial_batallas.txt";
+    private static final String PARTIDA_FILE    = "batalla_guardada.txt";
+    private static final String PERSONAJES_FILE = "personajes.txt";
 
     // ================================================================
     // 1) Persistencia de Historial (historial_batallas.txt)
+    //    Formato:
+    //      <numeroBatallaGlobal>
+    //      BATALLA #X - Heroe: ... | Villano: ... | Ganador: ... | Turnos: N
+    //      ...
     // ================================================================
 
-    /**
-     * Guarda el historial de batallas en el archivo.
-     * Formato:
-     *   <numeroBatallaGlobal>
-     *   BATALLA #1 - ...
-     *   BATALLA #2 - ...
-     */
+    /** Guarda el historial de batallas (ultimas 5) + numero global. */
     public static void guardarHistorial(HistorialBatallas historial) throws IOException {
         Objects.requireNonNull(historial, "historial no puede ser null");
         try (BufferedWriter writer = Files.newBufferedWriter(
                 Paths.get(HISTORIAL_FILE), StandardCharsets.UTF_8)) {
 
-            writer.write(String.valueOf(historial.getNumeroBatallaGlobal())); // usar getter
+            writer.write(String.valueOf(historial.getNumeroBatallaGlobal()));
             writer.newLine();
 
             String[] batallas = historial.getHistorialBatallas();
@@ -48,10 +57,7 @@ public class PersistenciaManager {
         }
     }
 
-    /**
-     * Carga el historial de batallas desde el archivo.
-     * Si el archivo no existe, devuelve un historial vacío.
-     */
+    /** Carga el historial: numero global + últimas 5 entradas. */
     public static HistorialBatallas cargarHistorial() throws IOException {
         HistorialBatallas historial = new HistorialBatallas();
         Path p = Paths.get(HISTORIAL_FILE);
@@ -64,12 +70,11 @@ public class PersistenciaManager {
                 try {
                     historial.setNumeroBatallaGlobal(Integer.parseInt(lineaNumeroBatalla));
                 } catch (NumberFormatException nfe) {
-                    // Si hay basura en la primera línea, lo dejamos en 0 sin romper.
-                    historial.setNumeroBatallaGlobal(0);
+                    historial.setNumeroBatallaGlobal(0); // tolerante a errores
                 }
             }
 
-            // 2) líneas del historial
+            // 2) entradas del historial
             String linea;
             while ((linea = reader.readLine()) != null) {
                 historial.guardarBatalla(linea);
@@ -80,47 +85,60 @@ public class PersistenciaManager {
 
     // ================================================================
     // 2) Persistencia de Estado de Partida (batalla_guardada.txt)
-    //    Formato de ejemplo (CSV simple):
+    //    Formato:
     //      TURNO:<int>
-    //      HEROE:Nombre,vida,fuerza,defensa
-    //      VILLANO:Nombre,vida,fuerza,defensa
+    //      HEROE:Nombre,vida,fuerza,defensa,bendicion
+    //      VILLANO:Nombre,vida,fuerza,defensa,bendicion
     // ================================================================
 
     /**
-     * Guarda el estado completo de la partida (personajes y turno actual).
-     * Requiere que Personaje tenga: getNombre(), getVida(), getFuerza(), getDefensa()
+     * Guarda el estado completo de la partida (para retomar).
+     * Usa acceso directo a fuerza/defensa/bendicion por estar en mismo paquete.
      */
     public static void guardarPartida(Personaje heroe, Personaje villano, int turnoActual) throws IOException {
         Objects.requireNonNull(heroe, "heroe no puede ser null");
         Objects.requireNonNull(villano, "villano no puede ser null");
 
-       
-    }
+        try (BufferedWriter writer = Files.newBufferedWriter(
+                Paths.get(PARTIDA_FILE), StandardCharsets.UTF_8)) {
 
-    /**
-     * DTO para devolver al cargar la partida, sin acoplarse a constructores específicos.
-     * El controlador puede usar esto para instanciar Heroe/Villano como corresponda.
-     */
-    public static class PartidaCargada {
-        public int turno;
+            writer.write("TURNO:" + turnoActual);
+            writer.newLine();
 
-        public String heroeNombre;
-        public int heroeVida, heroeFuerza, heroeDefensa;
+            writer.write("HEROE:" +
+                    sanitize(heroe.getNombre()) + "," +
+                    heroe.getVida() + "," +
+                    heroe.fuerza + "," +
+                    heroe.defensa + "," +
+                    heroe.bendicion);
+            writer.newLine();
 
-        public String villanoNombre;
-        public int villanoVida, villanoFuerza, villanoDefensa;
-
-        @Override public String toString() {
-            return "PartidaCargada{turno=" + turno +
-                    ", HEROE=(" + heroeNombre + "," + heroeVida + "," + heroeFuerza + "," + heroeDefensa + ")" +
-                    ", VILLANO=(" + villanoNombre + "," + villanoVida + "," + villanoFuerza + "," + villanoDefensa + ")}";
+            writer.write("VILLANO:" +
+                    sanitize(villano.getNombre()) + "," +
+                    villano.getVida() + "," +
+                    villano.fuerza + "," +
+                    villano.defensa + "," +
+                    villano.bendicion);
+            writer.newLine();
         }
     }
 
-    /**
-     * Carga el estado de la partida desde archivo y devuelve un DTO con los datos.
-     * Si no existe archivo, devuelve null.
-     */
+    /** DTO para cargar partida sin acoplar a constructores concretos. */
+    public static class PartidaCargada {
+        public int turno;
+        public String heroeNombre;
+        public int heroeVida, heroeFuerza, heroeDefensa, heroeBendicion;
+        public String villanoNombre;
+        public int villanoVida, villanoFuerza, villanoDefensa, villanoBendicion;
+
+        @Override public String toString() {
+            return "PartidaCargada{turno=" + turno +
+                    ", HEROE=(" + heroeNombre + "," + heroeVida + "," + heroeFuerza + "," + heroeDefensa + "," + heroeBendicion + ")" +
+                    ", VILLANO=(" + villanoNombre + "," + villanoVida + "," + villanoFuerza + "," + villanoDefensa + "," + villanoBendicion + ")}";
+        }
+    }
+
+    /** Carga el estado de la partida para reanudar. Devuelve null si no hay archivo. */
     public static PartidaCargada cargarPartida() throws IOException {
         Path p = Paths.get(PARTIDA_FILE);
         if (!Files.exists(p)) return null;
@@ -142,25 +160,87 @@ public class PersistenciaManager {
             if (linea == null || !linea.startsWith("HEROE:")) {
                 throw new IOException("Formato inválido: falta línea HEROE");
             }
-            String[] h = parseCSVDespuesDePrefijo(linea, "HEROE:", 4);
-            dto.heroeNombre  = h[0];
-            dto.heroeVida    = parseEntero(h[1], "HEROE.vida");
-            dto.heroeFuerza  = parseEntero(h[2], "HEROE.fuerza");
-            dto.heroeDefensa = parseEntero(h[3], "HEROE.defensa");
+            String[] h = parseCSVDespuesDePrefijo(linea, "HEROE:", 5);
+            dto.heroeNombre     = h[0];
+            dto.heroeVida       = parseEntero(h[1], "HEROE.vida");
+            dto.heroeFuerza     = parseEntero(h[2], "HEROE.fuerza");
+            dto.heroeDefensa    = parseEntero(h[3], "HEROE.defensa");
+            dto.heroeBendicion  = parseEntero(h[4], "HEROE.bendicion");
 
             // VILLANO
             linea = reader.readLine();
             if (linea == null || !linea.startsWith("VILLANO:")) {
                 throw new IOException("Formato inválido: falta línea VILLANO");
             }
-            String[] v = parseCSVDespuesDePrefijo(linea, "VILLANO:", 4);
-            dto.villanoNombre  = v[0];
-            dto.villanoVida    = parseEntero(v[1], "VILLANO.vida");
-            dto.villanoFuerza  = parseEntero(v[2], "VILLANO.fuerza");
-            dto.villanoDefensa = parseEntero(v[3], "VILLANO.defensa");
+            String[] v = parseCSVDespuesDePrefijo(linea, "VILLANO:", 5);
+            dto.villanoNombre    = v[0];
+            dto.villanoVida      = parseEntero(v[1], "VILLANO.vida");
+            dto.villanoFuerza    = parseEntero(v[2], "VILLANO.fuerza");
+            dto.villanoDefensa   = parseEntero(v[3], "VILLANO.defensa");
+            dto.villanoBendicion = parseEntero(v[4], "VILLANO.bendicion");
         }
 
         return dto;
+    }
+
+    // ================================================================
+    // 3) Persistencia de Personajes Permanentes (personajes.txt)
+    //    Formato por línea: TIPO;Nombre;Vida;Fuerza;Defensa;Bendicion
+    //    TIPO ∈ {HEROE, VILLANO, PERSONAJE}
+    // ================================================================
+
+    /** Guarda la lista de personajes permanentes. */
+    public static void guardarPersonajes(List<Personaje> personajes) throws IOException {
+        Objects.requireNonNull(personajes, "personajes no puede ser null");
+        try (BufferedWriter w = Files.newBufferedWriter(Paths.get(PERSONAJES_FILE), StandardCharsets.UTF_8)) {
+            for (Personaje p : personajes) {
+                String tipo;
+                if (p instanceof Heroe) tipo = "HEROE";
+                else if (p instanceof Villano) tipo = "VILLANO";
+                else tipo = "PERSONAJE";
+
+                w.write(tipo + ";" +
+                        sanitize(p.getNombre()) + ";" +
+                        p.getVida() + ";" +
+                        p.fuerza + ";" +
+                        p.defensa + ";" +
+                        p.bendicion);
+                w.newLine();
+            }
+        }
+    }
+
+    /** DTO para reconstruir personajes sin acoplar a constructores concretos. */
+    public static class PersonajeDTO {
+        public String tipo;   // "HEROE"/"VILLANO"/"PERSONAJE"
+        public String nombre;
+        public int vida, fuerza, defensa, bendicion;
+    }
+
+    /** Carga personajes permanentes desde archivo como DTOs. */
+    public static List<PersonajeDTO> cargarPersonajes() throws IOException {
+        List<PersonajeDTO> out = new ArrayList<>();
+        Path p = Paths.get(PERSONAJES_FILE);
+        if (!Files.exists(p)) return out;
+
+        try (BufferedReader r = Files.newBufferedReader(p, StandardCharsets.UTF_8)) {
+            String line;
+            while ((line = r.readLine()) != null) {
+                if (line.isBlank()) continue;
+                String[] parts = line.split(";", -1);
+                if (parts.length != 6) continue; // línea inválida, la salto
+
+                PersonajeDTO dto = new PersonajeDTO();
+                dto.tipo      = parts[0].trim();
+                dto.nombre    = parts[1].trim();
+                dto.vida      = parseEntero(parts[2], "vida");
+                dto.fuerza    = parseEntero(parts[3], "fuerza");
+                dto.defensa   = parseEntero(parts[4], "defensa");
+                dto.bendicion = parseEntero(parts[5], "bendicion");
+                out.add(dto);
+            }
+        }
+        return out;
     }
 
     // ================================================================
