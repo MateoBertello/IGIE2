@@ -29,7 +29,13 @@ public class IEIG2 {
 
                 Heroe   heroe   = new Heroe(nH, cfg.vida, cfg.fuerza, cfg.defensa, cfg.bendicion);
                 Villano villano = new Villano(nV, cfg.vida, cfg.fuerza, cfg.defensa, cfg.bendicion);
-                HistorialBatallas hist = new HistorialBatallas();
+                HistorialBatallas hist;
+                try {
+                    hist = ieig2.modelo.PersistenciaManager.cargarHistorial();
+                } catch (Exception e) {
+                    hist = new HistorialBatallas();
+                    System.err.println("No se pudo cargar historial: " + e.getMessage());
+                }
 
                 f.dispose();
                 // currentBattle=1, totalBattles=cfg.batallas
