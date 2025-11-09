@@ -20,8 +20,9 @@ A través de una interfaz interactiva, se busca proporcionar una experiencia de 
 
 - **[Bertello Mateo]** - [ Reestructurar el proyecto en arquitectura MVC] Prompts: https://gemini.google.com/share/c8aa91fa9427
 - **[Federico Terradas]** - [ Implementacion de la ventana de configuracion, Cambio de main class en el proyecto ] https://chatgpt.com/share/690d1528-0b64-8004-94d7-0e8c223d13bf
-- **[Joaquin Ballesteros]**-
-- **[Lucas Babreris]**-
+- **[Joaquin Ballesteros]**- [ Ventana de batalla y configuracion de menu ] https://chatgpt.com/g/g-p-68d68cba08e88191823d38a84b1f30d1-tareas-escolares/c/6910b15c-c07c-8331-867d-394eab608b7a
+- **[Lucas Babreris]**
+- **[Federico Medina]** -
 - **[Emanuel Ferreyra]**-
 - **[Tomas Mondino]**-
 - **[Mateo Paredes]**-
@@ -41,6 +42,8 @@ Configuracion Inicial
 
 ![Pantallazo del juego](img/captura.png)
 
+Pantalla Principal
+![Pantallazo del juego](img/captura-batalla.png)
 
 ## 📁 Estructura del Proyecto
 
