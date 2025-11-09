@@ -3,7 +3,6 @@ package ieig2.modelo;
 public class HistorialBatallas {
 
     // === Historial de batallas (últimas 5) ===
-    // Estos campos ya no son 'static'
     private static final int MAX_BATALLAS = 5;
     private String[] historialBatallas = new String[MAX_BATALLAS];
     private int contadorBatallas = 0;
@@ -11,7 +10,6 @@ public class HistorialBatallas {
 
     /**
      * Crea la entrada de texto para una batalla que acaba de terminar.
-     *
      */
     public String crearEntradaBatalla(String heroe, String villano, String ganador, int turnos) {
         numeroBatallaGlobal++; // Incrementa el contador global
@@ -26,7 +24,6 @@ public class HistorialBatallas {
 
     /**
      * Guarda la última batalla en el array, desplazando las antiguas si está lleno.
-     *
      */
     public void guardarBatalla(String batalla) {
         if (contadorBatallas < MAX_BATALLAS) {
@@ -43,10 +40,7 @@ public class HistorialBatallas {
     }
 
     /**
-     * ¡CAMBIO IMPORTANTE DE MVC!
-     * Ya no 'imprime' el historial (void).
-     * Ahora 'devuelve' el historial como un String para que la Vista lo imprima.
-     *
+     * Devuelve el historial como un String para que la Vista lo muestre.
      */
     public String obtenerHistorialComoString() {
         StringBuilder sb = new StringBuilder();
@@ -63,8 +57,19 @@ public class HistorialBatallas {
         }
         return sb.toString();
     }
-    
-    // Getters que el Controlador podría necesitar para el reporte
+
+    // ========================
+    // Getters usados por el controlador/persistencia
+    // ========================
     public int getContadorBatallas() { return contadorBatallas; }
     public String[] getHistorialBatallas() { return historialBatallas; }
+
+    // === Getters/Setters usados por PersistenciaManager ===
+    public int getNumeroBatallaGlobal() {
+        return numeroBatallaGlobal;
+    }
+
+    public void setNumeroBatallaGlobal(int numeroBatallaGlobal) {
+        this.numeroBatallaGlobal = numeroBatallaGlobal;
+    }
 }
