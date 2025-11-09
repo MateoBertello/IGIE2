@@ -1,4 +1,5 @@
 package ieig2.controlador;
+import ieig2.modelo.PersistenciaManager;
 
 import ieig2.vista.*;
 import ieig2.modelo.Heroe;
@@ -67,15 +68,24 @@ public class GameController {
     }
 
     private void onGuardar(ActionEvent e) {
-        try {
-            historial.guardarBatalla("Guardado en turno " + turn);
-            onEvent("Partida guardada correctamente");
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(view,
-                    "Error al guardar: " + ex.getMessage(),
-                    "Guardar partida", JOptionPane.ERROR_MESSAGE);
-        }
+    try {
+        // Debug opcional para ver dónde se guarda
+        System.out.println("[DEBUG] Working dir = " + System.getProperty("user.dir"));
+
+        // Guarda estado completo en batalla_guardada.txt
+        PersistenciaManager.guardarPartida(h, v, turn);
+
+        onEvent("Partida guardada correctamente (turno " + turn + ").");
+        JOptionPane.showMessageDialog(view,
+                "Partida guardada.\nTurno: " + turn,
+                "Guardar partida", JOptionPane.INFORMATION_MESSAGE);
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(view,
+                "Error al guardar: " + ex.getMessage(),
+                "Guardar partida", JOptionPane.ERROR_MESSAGE);
     }
+}
+
 
     // =======================
     // Avance de turnos
@@ -170,15 +180,30 @@ public class GameController {
         view.updateRight(Mapper.toVM(v));
     }
 
-    public void checkEndAndShowReportIfNeeded() {
-        if (isFinished()) {
-            view.appendEvent("¡Fin de batalla!");
-            String ganador = h.estaVivo() ? h.getNombre() : v.getNombre();
-            JOptionPane.showMessageDialog(view,
-                    "¡Ganador: " + ganador + "!\nTurnos: " + (turn - 1),
-                    "Reporte Final", JOptionPane.INFORMATION_MESSAGE);
+   public void checkEndAndShowReportIfNeeded() {
+    if (isFinished()) {
+        view.appendEvent("¡Fin de batalla!");
+        String ganador = h.estaVivo() ? h.getNombre() : v.getNombre();
+        int turnos = turn - 1;
+
+        JOptionPane.showMessageDialog(view,
+                "¡Ganador: " + ganador + "!\nTurnos: " + turnos,
+                "Reporte Final", JOptionPane.INFORMATION_MESSAGE);
+
+        // ➜ Agregar entrada al historial y persistir
+        String entrada = historial.crearEntradaBatalla(h.getNombre(), v.getNombre(), ganador, turnos);
+        historial.guardarBatalla(entrada);
+
+        try {
+            ieig2.modelo.PersistenciaManager.guardarHistorial(historial);
+            System.out.println("[DEBUG] Historial guardado correctamente.");
+        } catch (Exception ex) {
+            System.err.println("No se pudo guardar historial: " + ex.getMessage());
         }
     }
+}
+
+
 
     // =======================
     // Mapeador del modelo a la vista
