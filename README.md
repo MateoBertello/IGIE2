@@ -23,6 +23,7 @@ A través de una interfaz interactiva, se busca proporcionar una experiencia de 
 - **[Joaquin Ballesteros]**-
 - **[Lucas Babreris]**-
 - **[Emanuel Ferreyra]**-
+- **[Tomas Mondino]**-
 
 
 
