@@ -44,5 +44,7 @@ public class IEIG2 {
             f.setLocationRelativeTo(null);
             f.setVisible(true);
         });
+        
     }
+    
 }

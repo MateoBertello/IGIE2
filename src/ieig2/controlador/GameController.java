@@ -19,13 +19,15 @@ public class GameController {
     private int turn = 1;
     private boolean paused = false;
 
-    // simulación automática
     private Timer autoTimer;
 
     public GameController(Heroe heroe, Villano villano, HistorialBatallas hist,
                           int currentBattle, int totalBattles) {
-        this.h = heroe; this.v = villano; this.historial = hist;
-        this.currentBattle = currentBattle; this.totalBattles = totalBattles;
+        this.h = heroe;
+        this.v = villano;
+        this.historial = hist;
+        this.currentBattle = currentBattle;
+        this.totalBattles = totalBattles;
 
         this.view = new BatallaVista();
         bindMenu();
@@ -33,26 +35,32 @@ public class GameController {
         this.view.setVisible(true);
     }
 
+    // =======================
+    // Vincular menú
+    // =======================
     private void bindMenu() {
         view.miPausar.addActionListener(this::onPausar);
         view.miGuardar.addActionListener(this::onGuardar);
         view.miSalir.addActionListener(e -> System.exit(0));
 
-        // nuevos
         view.miAvanzar.addActionListener(e -> advanceOneTurn());
         view.miAuto.addActionListener(e -> toggleAuto());
 
-        view.miHistorial.addActionListener(e ->
-                JOptionPane.showMessageDialog(view, historial.obtenerHistorialComoString(),
-                        "Historial de Batallas", JOptionPane.INFORMATION_MESSAGE));
-        view.miStats.addActionListener(e ->
-                JOptionPane.showMessageDialog(view, "(Estadísticas generales)", "Estadísticas",
-                        JOptionPane.INFORMATION_MESSAGE));
-        view.miRanking.addActionListener(e ->
-                JOptionPane.showMessageDialog(view, "(Ranking de personajes)", "Ranking",
-                        JOptionPane.INFORMATION_MESSAGE));
+        // 🔹 Nuevos: abrir ventanas según el menú "Ver"
+        view.miRanking.addActionListener(e -> abrirReporte("ranking"));
+        view.miStats.addActionListener(e -> abrirReporte("stats"));
+        view.miHistorial.addActionListener(e -> abrirReporte("historial"));
     }
 
+    private void abrirReporte(String seccion) {
+        // Esto abre la ventana de reporte en la sección correspondiente
+        VentanaReporteFinal vrf = new VentanaReporteFinal(seccion);
+        vrf.setVisible(true);
+    }
+
+    // =======================
+    // Acciones básicas
+    // =======================
     private void onPausar(ActionEvent e) {
         paused = !paused;
         onEvent(paused ? "Partida en pausa" : "Partida reanudada");
@@ -63,22 +71,32 @@ public class GameController {
             historial.guardarBatalla("Guardado en turno " + turn);
             onEvent("Partida guardada correctamente");
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(view, "Error al guardar: " + ex.getMessage(),
+            JOptionPane.showMessageDialog(view,
+                    "Error al guardar: " + ex.getMessage(),
                     "Guardar partida", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    /** Avanza UN turno completo: actúa Héroe, luego Villano (si sigue vivo). */
+    // =======================
+    // Avance de turnos
+    // =======================
     public void advanceOneTurn() {
-        if (paused) { onEvent("(pausado)"); return; }
-        if (isFinished()) { checkEndAndShowReportIfNeeded(); return; }
+        if (paused) {
+            onEvent("(pausado)");
+            return;
+        }
+        if (isFinished()) {
+            checkEndAndShowReportIfNeeded();
+            return;
+        }
 
         // Turno del Héroe
         String logH = safeDecidirAccion(h, v);
         if (logH != null && !logH.isBlank()) onEvent(logH);
 
         if (!v.estaVivo()) {
-            endTurn(); return;
+            endTurn();
+            return;
         }
 
         // Turno del Villano
@@ -90,17 +108,17 @@ public class GameController {
 
     private String safeDecidirAccion(Object atacante, Object defensor) {
         try {
-            // Ambos tienen decidirAccion(Personaje) en tu modelo
             return (String) atacante.getClass()
                     .getMethod("decidirAccion", defensor.getClass().getSuperclass())
                     .invoke(atacante, defensor);
         } catch (NoSuchMethodException nsme) {
             try {
-                // fallback: decidirAccion(Object)
                 return (String) atacante.getClass()
                         .getMethod("decidirAccion", Object.class)
                         .invoke(atacante, defensor);
-            } catch (Exception ignore) { return null; }
+            } catch (Exception ignore) {
+                return null;
+            }
         } catch (Exception e) {
             return null;
         }
@@ -113,9 +131,13 @@ public class GameController {
         checkEndAndShowReportIfNeeded();
     }
 
-    private boolean isFinished() { return !h.estaVivo() || !v.estaVivo(); }
+    private boolean isFinished() {
+        return !h.estaVivo() || !v.estaVivo();
+    }
 
-    // ===== Simulación automática con javax.swing.Timer =====
+    // =======================
+    // Simulación automática
+    // =======================
     private void toggleAuto() {
         if (autoTimer != null && autoTimer.isRunning()) {
             autoTimer.stop();
@@ -124,17 +146,23 @@ public class GameController {
         }
         autoTimer = new Timer(900, e -> {
             if (paused) return;
-            if (isFinished()) { ((Timer)e.getSource()).stop(); checkEndAndShowReportIfNeeded(); return; }
+            if (isFinished()) {
+                ((Timer) e.getSource()).stop();
+                checkEndAndShowReportIfNeeded();
+                return;
+            }
             advanceOneTurn();
         });
         onEvent("(auto) iniciado");
         autoTimer.start();
     }
 
-    // ===== API que podría usar otro motor =====
-    public boolean isPaused() { return paused; }
-    public void onEvent(String text) { view.appendEvent(text); }
-    public void setCurrentBattle(int n) { currentBattle = n; refreshAll(); }
+    // =======================
+    // API auxiliar
+    // =======================
+    public void onEvent(String text) {
+        view.appendEvent(text);
+    }
 
     public void refreshAll() {
         view.setBattleInfo(currentBattle, totalBattles, turn);
@@ -147,16 +175,17 @@ public class GameController {
             view.appendEvent("¡Fin de batalla!");
             String ganador = h.estaVivo() ? h.getNombre() : v.getNombre();
             JOptionPane.showMessageDialog(view,
-                    "¡Ganador: " + ganador + "!\nTurnos: " + (turn-1),
+                    "¡Ganador: " + ganador + "!\nTurnos: " + (turn - 1),
                     "Reporte Final", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
-    // ===== Mapeo de tu modelo → VM de la vista (compactado) =====
+    // =======================
+    // Mapeador del modelo a la vista
+    // =======================
     private static class Mapper {
         static PersonajeVM toVM(Object p) {
             String nombre = callStr(p, "getNombre");
-            // separar "(Apodo)" si viene adentro del nombre
             String apodo = null;
             int a = nombre.indexOf(" (");
             if (a > 0 && nombre.endsWith(")")) {
@@ -164,17 +193,20 @@ public class GameController {
                 nombre = nombre.substring(0, a);
             }
             int vida = callInt(p, "getVida");
-            int vidaMax = callInt(p, "getVidaMax"); if (vidaMax <= 0) vidaMax = 160;
-            int bend  = clamp(tryGet(p, "getBendicion"), 0, 100);
-            String arma = String.valueOf(callObj(p, "getArma")); if ("null".equals(arma)) arma = "—";
-            boolean critico = vida <= Math.max(1, (int)(vidaMax * 0.15));
-            String estadoEspecial = null; // poné acá si tenés info (leviatán, etc.)
+            int vidaMax = callInt(p, "getVidaMax");
+            if (vidaMax <= 0) vidaMax = 160;
+            int bend = clamp(tryGet(p, "getBendicion"), 0, 100);
+            String arma = String.valueOf(callObj(p, "getArma"));
+            if ("null".equals(arma)) arma = "—";
+            boolean critico = vida <= Math.max(1, (int) (vidaMax * 0.15));
+            String estadoEspecial = null;
             return new PersonajeVM(nombre, apodo, vida, vidaMax, bend, arma, estadoEspecial, critico);
         }
-        static int clamp(int v, int lo, int hi){ return Math.max(lo, Math.min(hi, v)); }
-        static Object callObj(Object o, String m){ try { return o.getClass().getMethod(m).invoke(o);} catch(Exception e){return null;}}
-        static String callStr(Object o, String m){ Object r=callObj(o,m); return r==null?"-":r.toString();}
-        static int callInt(Object o, String m){ Object r=callObj(o,m); return (r instanceof Number)?((Number)r).intValue():0; }
-        static int tryGet(Object o, String m){ Object r=callObj(o,m); return (r instanceof Number)?((Number)r).intValue():-1; }
+
+        static int clamp(int v, int lo, int hi) { return Math.max(lo, Math.min(hi, v)); }
+        static Object callObj(Object o, String m) { try { return o.getClass().getMethod(m).invoke(o); } catch (Exception e) { return null; } }
+        static String callStr(Object o, String m) { Object r = callObj(o, m); return r == null ? "-" : r.toString(); }
+        static int callInt(Object o, String m) { Object r = callObj(o, m); return (r instanceof Number) ? ((Number) r).intValue() : 0; }
+        static int tryGet(Object o, String m) { Object r = callObj(o, m); return (r instanceof Number) ? ((Number) r).intValue() : -1; }
     }
 }
