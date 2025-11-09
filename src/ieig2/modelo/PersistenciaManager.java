@@ -20,8 +20,7 @@ import java.util.Objects;
  *  - batalla_guardada.txt     (estado actual completo para reanudar)
  *  - personajes.txt           (estadísticas permanentes)
  *
- * Nota: esta implementación usa acceso directo a campos protegidos de Personaje
- * (fuerza, defensa, bendicion) por estar en el mismo paquete ieig2.modelo.
+ * batallas guardadas
  */
 public class PersistenciaManager {
 
