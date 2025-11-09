@@ -48,6 +48,7 @@ public class BatallaControlador {
 
             // Opciones de consola en cada turno
             String op = vista.pedirEntrada("Opciones: [A]vanzar | [G]uardar | [S]alir sin finalizar: ");
+            System.out.println("[DEBUG] Opción ingresada: " + op);
             if (op != null) {
                 op = op.trim();
                 if (op.equalsIgnoreCase("G")) {
@@ -57,6 +58,7 @@ public class BatallaControlador {
                     return; // corta el método sin llamar a finalizarBatalla
                 }
             }
+
         }
 
         finalizarBatalla(turnoActual);
@@ -85,6 +87,7 @@ public class BatallaControlador {
 
             // Opciones de consola en cada turno
             String op = vista.pedirEntrada("Opciones: [A]vanzar | [G]uardar | [S]alir sin finalizar: ");
+            System.out.println("[DEBUG] Opción ingresada: " + op);
             if (op != null) {
                 op = op.trim();
                 if (op.equalsIgnoreCase("G")) {
