@@ -62,10 +62,10 @@ public class BatallaVistaConsola {
         // --- HÉROE ---
         String hNombre   = safeNombre(h);
         String hApodo    = safeApodo(h);
-        int hVida        = safeVida(h);      // TODO: ajustá si tu getter difiere
-        int hVidaMax     = safeVidaMax(h);   // TODO: ajustá si tu getter difiere
-        int hBend        = safeBendicion(h); // TODO: ajustá si tu getter difiere
-        String hArma     = safeArma(h);      // TODO: ajustá si tu getter difiere
+        int hVida        = safeVida(h);      
+        int hVidaMax     = safeVidaMax(h);  
+        int hBend        = safeBendicion(h); 
+        String hArma     = safeArma(h);         
 
         // --- VILLANO ---
         String vNombre   = safeNombre(v);

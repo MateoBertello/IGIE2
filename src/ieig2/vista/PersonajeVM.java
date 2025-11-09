@@ -2,10 +2,10 @@ package ieig2.vista;
 
 public class PersonajeVM {
     public final String nombre;
-    public final String apodo;        // puede venir vacío si ya está “Nombre (Apodo)”
+    public final String apodo;        
     public final int vida;
-    public final int vidaMax;         // usamos 160 por consigna
-    public final int bendicion;       // 0–100, o -1 si no disponible
+    public final int vidaMax;        
+    public final int bendicion;      
     public final String arma;
     public final String estadoEspecial;
     public final boolean enCritico;
