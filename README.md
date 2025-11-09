@@ -20,6 +20,7 @@ A través de una interfaz interactiva, se busca proporcionar una experiencia de 
 
 - **[Bertello Mateo]** - [ Reestructurar el proyecto en arquitectura MVC] Prompts: https://gemini.google.com/share/c8aa91fa9427
 - **[Federico Terradas]** - [ Implementacion de la ventana de configuracion, Cambio de main class en el proyecto ] https://chatgpt.com/share/690d1528-0b64-8004-94d7-0e8c223d13bf
+- **[Joaquin Ballesteros]**-
 - **[Lucas Babreris]**-
 
 
