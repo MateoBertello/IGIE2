@@ -41,6 +41,8 @@ Configuracion Inicial
 
 ![Pantallazo del juego](img/captura.png)
 
+Pantalla Principal
+![Pantallazo del juego](img/captura-batalla.png)
 
 ## 📁 Estructura del Proyecto
 
