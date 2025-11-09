@@ -74,4 +74,10 @@ public class BatallaVista extends JFrame {
     public void updateRight(PersonajeVM vm) { right.updateFrom(vm); }
     public void appendEvent(String text)    { logPanel.append(text); }
     public void autoScrollLog(boolean b)    { logPanel.setAutoScroll(b); }
+    public void addGuardarListener(java.awt.event.ActionListener l) { miGuardar.addActionListener(l); }
+    public void addPausarListener(java.awt.event.ActionListener l)  { miPausar.addActionListener(l); }
+    public void addAvanzarListener(java.awt.event.ActionListener l) { miAvanzar.addActionListener(l); }
+    public void addAutoListener(java.awt.event.ActionListener l)    { miAuto.addActionListener(l); }
+    public void addSalirListener(java.awt.event.ActionListener l)   { miSalir.addActionListener(l); }
+
 }
