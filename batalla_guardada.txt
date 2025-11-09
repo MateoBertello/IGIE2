@@ -1,0 +1,3 @@
+TURNO:9
+HEROE:das (asd),13,24,8,37
+VILLANO:qew (wrqe),0,24,8,37

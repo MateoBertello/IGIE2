@@ -1,0 +1,3 @@
+2
+BATALLA #1 - Heroe: das (asd) | Villano: qew (wrqe) | Ganador: das (asd) | Turnos: 8
+BATALLA #2 - Heroe: das (asd) | Villano: qew (wrqe) | Ganador: das (asd) | Turnos: 8
