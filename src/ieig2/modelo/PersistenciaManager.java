@@ -96,8 +96,8 @@ public class PersistenciaManager {
      * Usa acceso directo a fuerza/defensa/bendicion por estar en mismo paquete.
      */
     public static void guardarPartida(Personaje heroe, Personaje villano, int turnoActual) throws IOException {
-        Objects.requireNonNull(heroe, "heroe no puede ser null");
-        Objects.requireNonNull(villano, "villano no puede ser null");
+    System.out.println("[DEBUG] Working dir = " + System.getProperty("user.dir"));
+    System.out.println("[DEBUG] Guardando en: " + Paths.get("batalla_guardada.txt").toAbsolutePath());
 
         try (BufferedWriter writer = Files.newBufferedWriter(
                 Paths.get(PARTIDA_FILE), StandardCharsets.UTF_8)) {
