@@ -22,6 +22,7 @@ A través de una interfaz interactiva, se busca proporcionar una experiencia de 
 - **[Federico Terradas]** - [ Implementacion de la ventana de configuracion, Cambio de main class en el proyecto ] https://chatgpt.com/share/690d1528-0b64-8004-94d7-0e8c223d13bf
 - **[Joaquin Ballesteros]**-
 - **[Lucas Babreris]**-
+- **[Emanuel Ferreyra]**-
 
 
 
