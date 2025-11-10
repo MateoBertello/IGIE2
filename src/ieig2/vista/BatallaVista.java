@@ -1,4 +1,8 @@
 package ieig2.vista;
+import java.awt.event.ActionListener;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JOptionPane;
 
 import javax.swing.*;
 import java.awt.*;
@@ -69,6 +73,22 @@ public class BatallaVista extends JFrame {
     public void setBattleInfo(int currentBattle, int totalBattles, int turn) {
         top.setBattleInfo(currentBattle, totalBattles, turn);
     }
+    public void mostrarTextoLargo(String titulo, String contenido) {
+        JTextArea area = new JTextArea(contenido == null ? "" : contenido, 22, 72);
+        area.setEditable(false);
+        area.setLineWrap(true);
+        area.setWrapStyleWord(true);
+        JScrollPane sp = new JScrollPane(area);
+        JOptionPane.showMessageDialog(this, sp, titulo, JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public void mostrarAviso(String msg) {
+        JOptionPane.showMessageDialog(this, msg, "Aviso", JOptionPane.WARNING_MESSAGE);
+    }
+
+    public void mostrarError(String msg) {
+        JOptionPane.showMessageDialog(this, msg, "Error", JOptionPane.ERROR_MESSAGE);
+    }
 
     public void updateLeft(PersonajeVM vm)  { left.updateFrom(vm); }
     public void updateRight(PersonajeVM vm) { right.updateFrom(vm); }
@@ -79,5 +99,8 @@ public class BatallaVista extends JFrame {
     public void addAvanzarListener(java.awt.event.ActionListener l) { miAvanzar.addActionListener(l); }
     public void addAutoListener(java.awt.event.ActionListener l)    { miAuto.addActionListener(l); }
     public void addSalirListener(java.awt.event.ActionListener l)   { miSalir.addActionListener(l); }
+    public void addHistorialListener(ActionListener l) { miHistorial.addActionListener(l); }
+    public void addStatsListener(ActionListener l)     { miStats.addActionListener(l); }
+    public void addRankingListener(ActionListener l)   { miRanking.addActionListener(l); }
 
 }
