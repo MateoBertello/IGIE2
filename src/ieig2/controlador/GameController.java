@@ -1,18 +1,18 @@
 package ieig2.controlador;
-import ieig2.modelo.PersistenciaManager;
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.Arrays;
 
-import ieig2.vista.*;
+import ieig2.modelo.PersistenciaManager;
 import ieig2.modelo.Heroe;
 import ieig2.modelo.Villano;
 import ieig2.modelo.HistorialBatallas;
+import ieig2.vista.*;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
+import java.util.Arrays;
 
 public class GameController {
+
     private final BatallaVista view;
     private final Heroe h;
     private final Villano v;
@@ -22,39 +22,36 @@ public class GameController {
     private final int totalBattles;
     private int turn = 1;
     private boolean paused = false;
-
     private Timer autoTimer;
-    public GameController(Heroe heroe, Villano villano, HistorialBatallas hist,
-                      int currentBattle, int totalBattles) {
-    this.h = heroe;
-    this.v = villano;
-    this.historial = hist;
-    this.currentBattle = currentBattle;
-    this.totalBattles = totalBattles;
-    this.turn = 1; // turno inicial
 
-    this.view = new BatallaVista();
-    bindMenu();
-    refreshAll();
-    this.view.setVisible(true);
-}
-   public GameController(Heroe heroe, Villano villano, HistorialBatallas hist,
-                      int currentBattle, int totalBattles, int initialTurn) {
-    this.h = heroe;
-    this.v = villano;
-    this.historial = hist;
-    this.currentBattle = currentBattle;
-    this.totalBattles = totalBattles;
-    this.turn = Math.max(1, initialTurn); // 👈 respeta el turno cargado
+    public GameController(Heroe heroe, Villano villano, HistorialBatallas hist, int currentBattle, int totalBattles) {
+        this.h = heroe;
+        this.v = villano;
+        this.historial = hist;
+        this.currentBattle = currentBattle;
+        this.totalBattles = totalBattles;
+        this.turn = 1;
 
-    this.view = new BatallaVista();
-    bindMenu();
-    refreshAll();
-    this.view.setVisible(true);
+        this.view = new BatallaVista();
+        bindMenu();
+        refreshAll();
+        this.view.setVisible(true);
+    }
 
-    onEvent(" Partida cargada (Turno " + this.turn + ")");
-}
+    public GameController(Heroe heroe, Villano villano, HistorialBatallas hist, int currentBattle, int totalBattles, int initialTurn) {
+        this.h = heroe;
+        this.v = villano;
+        this.historial = hist;
+        this.currentBattle = currentBattle;
+        this.totalBattles = totalBattles;
+        this.turn = Math.max(1, initialTurn);
 
+        this.view = new BatallaVista();
+        bindMenu();
+        refreshAll();
+        this.view.setVisible(true);
+        onEvent("Partida cargada (Turno " + this.turn + ")");
+    }
 
     // =======================
     // Vincular menú
@@ -63,18 +60,16 @@ public class GameController {
         view.miPausar.addActionListener(this::onPausar);
         view.miGuardar.addActionListener(this::onGuardar);
         view.miSalir.addActionListener(e -> System.exit(0));
-
         view.miAvanzar.addActionListener(e -> advanceOneTurn());
         view.miAuto.addActionListener(e -> toggleAuto());
 
-        // 🔹 Nuevos: abrir ventanas según el menú "Ver"
+        // Abrir ventanas según el menú "Ver"
         view.miRanking.addActionListener(e -> abrirReporte("ranking"));
         view.miStats.addActionListener(e -> abrirReporte("stats"));
         view.miHistorial.addActionListener(e -> abrirReporte("historial"));
     }
 
     private void abrirReporte(String seccion) {
-        // Esto abre la ventana de reporte en la sección correspondiente
         VentanaReporteFinal vrf = new VentanaReporteFinal(seccion);
         vrf.setVisible(true);
     }
@@ -88,46 +83,26 @@ public class GameController {
     }
 
     private void onGuardar(ActionEvent e) {
-    try {
-        // Debug opcional para ver dónde se guarda
-        System.out.println("[DEBUG] Working dir = " + System.getProperty("user.dir"));
-
-        // Guarda estado completo en batalla_guardada.txt
-        PersistenciaManager.guardarPartida(h, v, turn);
-
-        onEvent("Partida guardada correctamente (turno " + turn + ").");
-        JOptionPane.showMessageDialog(view,
-                "Partida guardada.\nTurno: " + turn,
-                "Guardar partida", JOptionPane.INFORMATION_MESSAGE);
-    } catch (Exception ex) {
-        JOptionPane.showMessageDialog(view,
-                "Error al guardar: " + ex.getMessage(),
-                "Guardar partida", JOptionPane.ERROR_MESSAGE);
+        try {
+            PersistenciaManager.guardarPartida(h, v, turn);
+            onEvent("Partida guardada correctamente (turno " + turn + ").");
+            JOptionPane.showMessageDialog(view, "Partida guardada.\nTurno: " + turn, "Guardar partida", JOptionPane.INFORMATION_MESSAGE);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(view, "Error al guardar: " + ex.getMessage(), "Guardar partida", JOptionPane.ERROR_MESSAGE);
+        }
     }
-}
-
 
     // =======================
     // Avance de turnos
     // =======================
     public void advanceOneTurn() {
-        if (paused) {
-            onEvent("(pausado)");
-            return;
-        }
-        if (isFinished()) {
-            checkEndAndShowReportIfNeeded();
-            return;
-        }
+        if (paused) { onEvent("(pausado)"); return; }
+        if (isFinished()) { checkEndAndShowReportIfNeeded(); return; }
 
         // Turno del Héroe
         String logH = safeDecidirAccion(h, v);
         if (logH != null && !logH.isBlank()) onEvent(logH);
-
-        if (!v.estaVivo()) {
-            endTurn();
-            return;
-        }
+        if (!v.estaVivo()) { endTurn(); return; }
 
         // Turno del Villano
         String logV = safeDecidirAccion(v, h);
@@ -146,12 +121,8 @@ public class GameController {
                 return (String) atacante.getClass()
                         .getMethod("decidirAccion", Object.class)
                         .invoke(atacante, defensor);
-            } catch (Exception ignore) {
-                return null;
-            }
-        } catch (Exception e) {
-            return null;
-        }
+            } catch (Exception ignore) { return null; }
+        } catch (Exception e) { return null; }
     }
 
     private void endTurn() {
@@ -200,55 +171,37 @@ public class GameController {
         view.updateRight(Mapper.toVM(v));
     }
 
-   public void checkEndAndShowReportIfNeeded() {
-    if (isFinished()) {
-        view.appendEvent("¡Fin de batalla!");
-        String ganador = h.estaVivo() ? h.getNombre() : v.getNombre();
-        int turnos = turn - 1;
+    public void checkEndAndShowReportIfNeeded() {
+        if (isFinished()) {
+            view.appendEvent("¡Fin de batalla!");
+            String ganador = h.estaVivo() ? h.getNombre() : v.getNombre();
+            int turnos = turn - 1;
+            JOptionPane.showMessageDialog(view, "¡Ganador: " + ganador + "!\nTurnos: " + turnos, "Reporte Final", JOptionPane.INFORMATION_MESSAGE);
 
-        JOptionPane.showMessageDialog(view,
-                "¡Ganador: " + ganador + "!\nTurnos: " + turnos,
-                "Reporte Final", JOptionPane.INFORMATION_MESSAGE);
+            String entrada = historial.crearEntradaBatalla(h.getNombre(), v.getNombre(), ganador, turnos);
+            historial.guardarBatalla(entrada);
 
-        // ➜ Agregar entrada al historial y persistir
-        String entrada = historial.crearEntradaBatalla(h.getNombre(), v.getNombre(), ganador, turnos);
-        historial.guardarBatalla(entrada);
+            try { PersistenciaManager.guardarHistorial(historial); } catch (Exception ex) { System.err.println("No se pudo guardar historial: " + ex.getMessage()); }
 
-        try {
-            ieig2.modelo.PersistenciaManager.guardarHistorial(historial);
-            System.out.println("[DEBUG] Historial guardado correctamente.");
-        } catch (Exception ex) {
-            System.err.println("No se pudo guardar historial: " + ex.getMessage());
-        }
-        // ➜ Actualiza batalla más larga si esta fue mayor
-        if (turnos > historial.getBatallaMasLargaTurnos()) {
-            try {
-                java.lang.reflect.Field f1 = historial.getClass().getDeclaredField("batallaMasLargaTurnos");
-                java.lang.reflect.Field f2 = historial.getClass().getDeclaredField("batallaMasLargaGanador");
-                f1.setAccessible(true);
-                f2.setAccessible(true);
-                f1.set(historial, turnos);
-                f2.set(historial, ganador);
-            } catch (Exception ex) {
-                System.err.println("No se pudo actualizar batalla más larga: " + ex.getMessage());
+            // Actualiza batalla más larga
+            if (turnos > historial.getBatallaMasLargaTurnos()) {
+                try {
+                    java.lang.reflect.Field f1 = historial.getClass().getDeclaredField("batallaMasLargaTurnos");
+                    java.lang.reflect.Field f2 = historial.getClass().getDeclaredField("batallaMasLargaGanador");
+                    f1.setAccessible(true); f2.setAccessible(true);
+                    f1.set(historial, turnos); f2.set(historial, ganador);
+                } catch (Exception ex) { System.err.println("No se pudo actualizar batalla más larga: " + ex.getMessage()); }
             }
-        }
 
-         try {
-        PersistenciaManager.guardarPersonajes(
-            java.util.Arrays.asList(h, v),
-            turnos,                 // <- turnos reales de esta batalla
-            ganador                 // <- nombre real del ganador
-        );
-        System.out.println("✅ personajes.txt actualizado con estadísticas.");
-        } catch (IOException e) {
-            System.err.println("❌ No se pudo guardar personajes.txt: " + e.getMessage());
+            try {
+                PersistenciaManager.guardarPersonajes(
+                        Arrays.asList(h, v),
+                        turnos,
+                        ganador
+                );
+            } catch (IOException e) { System.err.println("❌ No se pudo guardar personajes.txt: " + e.getMessage()); }
         }
-
     }
-}
-
-
 
     // =======================
     // Mapeador del modelo a la vista
