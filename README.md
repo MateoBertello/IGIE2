@@ -12,7 +12,7 @@ A través de una interfaz interactiva, se busca proporcionar una experiencia de 
 - Añadir un sistema de persistencia de datos.
 
 **Video Explicativo:**
-[Enlace al video](#)
+[Enlace al video](#https://youtu.be/aOxy_Vcf4EU?si=KYKOxKabj9v0JrHL)
 
 
 
