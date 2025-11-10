@@ -1,8 +1,10 @@
 package ieig2.vista;
 
-import ieig2.modelo.TipoPersonaje;
+import ieig2.modelo.*;
+import ieig2.controlador.GameController;
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 
 public class ConfigInicialPanel extends JPanel {
     // Registro
@@ -90,5 +92,37 @@ public class ConfigInicialPanel extends JPanel {
         add(izquierda, BorderLayout.CENTER);
         add(cfg, BorderLayout.EAST);
         add(acciones, BorderLayout.SOUTH);
+
+        // ==========================================================
+        // ACCIÓN: Cargar partida guardada
+        // ==========================================================
+        btnCargar.addActionListener(e -> {
+            try {
+                PersistenciaManager.PartidaCargada pc = PersistenciaManager.cargarPartida();
+                if (pc == null) {
+                    JOptionPane.showMessageDialog(this, "No hay partida guardada.", "Cargar partida", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+
+                Heroe h = new Heroe(pc.heroeNombre, pc.heroeVida, pc.heroeFuerza, pc.heroeDefensa, pc.heroeBendicion);
+                Villano v = new Villano(pc.villanoNombre, pc.villanoVida, pc.villanoFuerza, pc.villanoDefensa, pc.villanoBendicion);
+
+                HistorialBatallas hist;
+                try {
+                    hist = PersistenciaManager.cargarHistorial();
+                } catch (IOException ex) {
+                    hist = new HistorialBatallas();
+                }
+
+                // Cerramos esta ventana y abrimos la batalla cargada
+                SwingUtilities.getWindowAncestor(this).dispose();
+                new GameController(h, v, hist, 1, 1, pc.turno);
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Error al cargar partida: " + ex.getMessage(),
+                        "Cargar partida", JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace();
+            }
+        });
     }
 }
