@@ -39,8 +39,8 @@ public class BatallaVista extends JFrame {
         center.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
         center.add(left);
         center.add(right);
-        add(center, BorderLayout.CENTER);
-
+        add(center, BorderLayout.CENTER
+);
         add(logPanel, BorderLayout.SOUTH);
 
         ((JComponent) getContentPane()).setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
