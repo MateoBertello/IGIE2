@@ -23,7 +23,7 @@ A través de una interfaz interactiva, se busca proporcionar una experiencia de 
 - **[Joaquin Ballesteros]**- [ Ventana de batalla y configuracion de menu ] https://chatgpt.com/g/g-p-68d68cba08e88191823d38a84b1f30d1-tareas-escolares/c/6910b15c-c07c-8331-867d-394eab608b7a
 - **[Lucas Babreris]**
 - **[Federico Medina]** -
-- **[Emanuel Ferreyra]**-
+- **[Emanuel Ferreyra]**- [Ventana de reportes, Ranking, Historial y estadisticas]
 - **[Tomas Mondino]**-
 - **[Mateo Paredes]**-
 
