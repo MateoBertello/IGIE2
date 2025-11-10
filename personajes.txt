@@ -1,8 +1,8 @@
-HEROE;QEQE (EQWE);40;22;12;53
-VILLANO;QRW (RQW);0;22;12;53
+HEROE;emanuel (ferreyra);150;20;52;81
+VILLANO;mateo (paredes);0;20;12;81
 -----
-MAYOR_DAÑO: 0 (QEQE (EQWE))
-BATALLA_MAS_LARGA: 6 turnos (ganador: QEQE (EQWE))
-ARMAS_INVOCADAS: QEQE (EQWE)=0, QRW (RQW)=0
-ATAQUES_SUPREMOS: QEQE (EQWE)=0, QRW (RQW)=0
+MAYOR_DAÑO: 23 (emanuel (ferreyra))
+BATALLA_MAS_LARGA: 8 turnos (ganador: emanuel (ferreyra))
+ARMAS_INVOCADAS: emanuel (ferreyra)=1, mateo (paredes)=1
+ATAQUES_SUPREMOS: emanuel (ferreyra)=0, mateo (paredes)=0
 PORCENTAJE_VICTORIAS: HEROE=100%, VILLANO=0%

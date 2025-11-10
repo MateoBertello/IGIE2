@@ -1,6 +1,6 @@
-22
-BATALLA #18 - Heroe: DADAS (ADS) | Villano: EWQE (QWSDQ) | Ganador: DADAS (ADS) | Turnos: 5
-BATALLA #19 - Heroe: QEQE (EQWE) | Villano: QRW (RQW) | Ganador: QEQE (EQWE) | Turnos: 6
-BATALLA #20 - Heroe: QEQE (EQWE) | Villano: QRW (RQW) | Ganador: QEQE (EQWE) | Turnos: 6
-BATALLA #21 - Heroe: QEQE (EQWE) | Villano: QRW (RQW) | Ganador: QEQE (EQWE) | Turnos: 6
+26
 BATALLA #22 - Heroe: QEQE (EQWE) | Villano: QRW (RQW) | Ganador: QEQE (EQWE) | Turnos: 6
+BATALLA #23 - Heroe: ema (eeee) | Villano: eea (asda) | Ganador: ema (eeee) | Turnos: 8
+BATALLA #24 - Heroe: ema (eeee) | Villano: eea (asda) | Ganador: ema (eeee) | Turnos: 8
+BATALLA #25 - Heroe: emanuel (ferreyra) | Villano: mateo (paredes) | Ganador: emanuel (ferreyra) | Turnos: 8
+BATALLA #26 - Heroe: emanuel (ferreyra) | Villano: mateo (paredes) | Ganador: emanuel (ferreyra) | Turnos: 8
