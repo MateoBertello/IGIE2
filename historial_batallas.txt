@@ -1,5 +1,6 @@
-4
-BATALLA #1 - Heroe: das (asd) | Villano: qew (wrqe) | Ganador: das (asd) | Turnos: 8
-BATALLA #2 - Heroe: das (asd) | Villano: qew (wrqe) | Ganador: das (asd) | Turnos: 8
-BATALLA #3 - Heroe: ads (dasa) | Villano: eqw (qds) | Ganador: ads (dasa) | Turnos: 13
-BATALLA #4 - Heroe: ads (dasa) | Villano: eqw (qds) | Ganador: ads (dasa) | Turnos: 13
+20
+BATALLA #16 - Heroe: ADS (QEW) | Villano: QWEQEW (EQWE) | Ganador: ADS (QEW) | Turnos: 6
+BATALLA #17 - Heroe: DADAS (ADS) | Villano: EWQE (QWSDQ) | Ganador: DADAS (ADS) | Turnos: 5
+BATALLA #18 - Heroe: DADAS (ADS) | Villano: EWQE (QWSDQ) | Ganador: DADAS (ADS) | Turnos: 5
+BATALLA #19 - Heroe: QEQE (EQWE) | Villano: QRW (RQW) | Ganador: QEQE (EQWE) | Turnos: 6
+BATALLA #20 - Heroe: QEQE (EQWE) | Villano: QRW (RQW) | Ganador: QEQE (EQWE) | Turnos: 6
