@@ -24,7 +24,7 @@ A través de una interfaz interactiva, se busca proporcionar una experiencia de 
 - **[Lucas Babreris]**
 - **[Federico Medina]** -
 - **[Emanuel Ferreyra]**- [Ventana de reportes, Ranking, Historial y estadisticas]
-- **[Tomas Mondino]**-
+- **[Tomas Mondino]**- [Ventana de Resportes, Estadisticas]
 - **[Mateo Paredes]**-
 
 
