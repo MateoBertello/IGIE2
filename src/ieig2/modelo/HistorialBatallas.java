@@ -7,6 +7,8 @@ public class HistorialBatallas {
     private String[] historialBatallas = new String[MAX_BATALLAS];
     private int contadorBatallas = 0;
     private int numeroBatallaGlobal = 0;
+    private int batallaMasLargaTurnos = 0;
+    private String batallaMasLargaGanador = "";
 
     /**
      * Crea la entrada de texto para una batalla que acaba de terminar.
@@ -63,6 +65,9 @@ public class HistorialBatallas {
     // ========================
     public int getContadorBatallas() { return contadorBatallas; }
     public String[] getHistorialBatallas() { return historialBatallas; }
+    public int getBatallaMasLargaTurnos() { return batallaMasLargaTurnos; }
+public String getBatallaMasLargaGanador() { return batallaMasLargaGanador; }
+
 
     // === Getters/Setters usados por PersistenciaManager ===
     public int getNumeroBatallaGlobal() {
