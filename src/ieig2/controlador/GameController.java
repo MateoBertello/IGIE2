@@ -1,5 +1,8 @@
 package ieig2.controlador;
 import ieig2.modelo.PersistenciaManager;
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.Arrays;
 
 import ieig2.vista.*;
 import ieig2.modelo.Heroe;
@@ -200,6 +203,31 @@ public class GameController {
         } catch (Exception ex) {
             System.err.println("No se pudo guardar historial: " + ex.getMessage());
         }
+        // ➜ Actualiza batalla más larga si esta fue mayor
+        if (turnos > historial.getBatallaMasLargaTurnos()) {
+            try {
+                java.lang.reflect.Field f1 = historial.getClass().getDeclaredField("batallaMasLargaTurnos");
+                java.lang.reflect.Field f2 = historial.getClass().getDeclaredField("batallaMasLargaGanador");
+                f1.setAccessible(true);
+                f2.setAccessible(true);
+                f1.set(historial, turnos);
+                f2.set(historial, ganador);
+            } catch (Exception ex) {
+                System.err.println("No se pudo actualizar batalla más larga: " + ex.getMessage());
+            }
+        }
+
+         try {
+        PersistenciaManager.guardarPersonajes(
+            java.util.Arrays.asList(h, v),
+            turnos,                 // <- turnos reales de esta batalla
+            ganador                 // <- nombre real del ganador
+        );
+        System.out.println("✅ personajes.txt actualizado con estadísticas.");
+        } catch (IOException e) {
+            System.err.println("❌ No se pudo guardar personajes.txt: " + e.getMessage());
+        }
+
     }
 }
 
