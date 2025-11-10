@@ -62,7 +62,6 @@ public class GameController {
         view.miSalir.addActionListener(e -> System.exit(0));
         view.miAvanzar.addActionListener(e -> advanceOneTurn());
         view.miAuto.addActionListener(e -> toggleAuto());
-
         // Abrir ventanas según el menú "Ver"
         view.miRanking.addActionListener(e -> abrirReporte("ranking"));
         view.miStats.addActionListener(e -> abrirReporte("stats"));
@@ -73,6 +72,7 @@ public class GameController {
         VentanaReporteFinal vrf = new VentanaReporteFinal(seccion);
         vrf.setVisible(true);
     }
+    
 
     // =======================
     // Acciones básicas
@@ -82,6 +82,7 @@ public class GameController {
         onEvent(paused ? "Partida en pausa" : "Partida reanudada");
     }
 
+    
     private void onGuardar(ActionEvent e) {
         try {
             PersistenciaManager.guardarPartida(h, v, turn);
@@ -90,7 +91,9 @@ public class GameController {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(view, "Error al guardar: " + ex.getMessage(), "Guardar partida", JOptionPane.ERROR_MESSAGE);
         }
+        
     }
+    
 
     // =======================
     // Avance de turnos
@@ -111,12 +114,14 @@ public class GameController {
         endTurn();
     }
 
+    
     private String safeDecidirAccion(Object atacante, Object defensor) {
         try {
             return (String) atacante.getClass()
                     .getMethod("decidirAccion", defensor.getClass().getSuperclass())
                     .invoke(atacante, defensor);
-        } catch (NoSuchMethodException nsme) {
+        } 
+        catch (NoSuchMethodException nsme) {
             try {
                 return (String) atacante.getClass()
                         .getMethod("decidirAccion", Object.class)
@@ -124,6 +129,7 @@ public class GameController {
             } catch (Exception ignore) { return null; }
         } catch (Exception e) { return null; }
     }
+    
 
     private void endTurn() {
         onEvent("\n--- Fin del Turno " + turn + " ---");
@@ -136,6 +142,7 @@ public class GameController {
         return !h.estaVivo() || !v.estaVivo();
     }
 
+    
     // =======================
     // Simulación automática
     // =======================
@@ -158,6 +165,7 @@ public class GameController {
         autoTimer.start();
     }
 
+    
     // =======================
     // API auxiliar
     // =======================
@@ -170,6 +178,7 @@ public class GameController {
         view.updateLeft(Mapper.toVM(h));
         view.updateRight(Mapper.toVM(v));
     }
+    
 
     public void checkEndAndShowReportIfNeeded() {
         if (isFinished()) {
@@ -203,6 +212,7 @@ public class GameController {
         }
     }
 
+    
     // =======================
     // Mapeador del modelo a la vista
     // =======================
@@ -224,7 +234,8 @@ public class GameController {
             boolean critico = vida <= Math.max(1, (int) (vidaMax * 0.15));
             String estadoEspecial = null;
             return new PersonajeVM(nombre, apodo, vida, vidaMax, bend, arma, estadoEspecial, critico);
-        }
+        } 
+        
 
         static int clamp(int v, int lo, int hi) { return Math.max(lo, Math.min(hi, v)); }
         static Object callObj(Object o, String m) { try { return o.getClass().getMethod(m).invoke(o); } catch (Exception e) { return null; } }
@@ -233,3 +244,5 @@ public class GameController {
         static int tryGet(Object o, String m) { Object r = callObj(o, m); return (r instanceof Number) ? ((Number) r).intValue() : -1; }
     }
 }
+
+

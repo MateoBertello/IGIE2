@@ -3,6 +3,8 @@ package ieig2.vista;
 import javax.swing.*;
 import java.awt.*;
 
+
+
 public class BatallaVista extends JFrame {
 
     // Menú
@@ -50,6 +52,7 @@ public class BatallaVista extends JFrame {
         return bar;
     }
 
+    
     // ==== API para el Controlador ====
     public void setBattleInfo(int currentBattle, int totalBattles, int turn) { top.setBattleInfo(currentBattle, totalBattles, turn); }
     public void mostrarTextoLargo(String titulo, String contenido) {
@@ -64,3 +67,7 @@ public class BatallaVista extends JFrame {
     public void updateRight(PersonajeVM vm) { right.updateFrom(vm); }
     public void appendEvent(String text) { logPanel.append(text); }
 }
+
+
+
+
