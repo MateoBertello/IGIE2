@@ -24,20 +24,37 @@ public class GameController {
     private boolean paused = false;
 
     private Timer autoTimer;
-
     public GameController(Heroe heroe, Villano villano, HistorialBatallas hist,
-                          int currentBattle, int totalBattles) {
-        this.h = heroe;
-        this.v = villano;
-        this.historial = hist;
-        this.currentBattle = currentBattle;
-        this.totalBattles = totalBattles;
+                      int currentBattle, int totalBattles) {
+    this.h = heroe;
+    this.v = villano;
+    this.historial = hist;
+    this.currentBattle = currentBattle;
+    this.totalBattles = totalBattles;
+    this.turn = 1; // turno inicial
 
-        this.view = new BatallaVista();
-        bindMenu();
-        refreshAll();
-        this.view.setVisible(true);
-    }
+    this.view = new BatallaVista();
+    bindMenu();
+    refreshAll();
+    this.view.setVisible(true);
+}
+   public GameController(Heroe heroe, Villano villano, HistorialBatallas hist,
+                      int currentBattle, int totalBattles, int initialTurn) {
+    this.h = heroe;
+    this.v = villano;
+    this.historial = hist;
+    this.currentBattle = currentBattle;
+    this.totalBattles = totalBattles;
+    this.turn = Math.max(1, initialTurn); // 👈 respeta el turno cargado
+
+    this.view = new BatallaVista();
+    bindMenu();
+    refreshAll();
+    this.view.setVisible(true);
+
+    onEvent(" Partida cargada (Turno " + this.turn + ")");
+}
+
 
     // =======================
     // Vincular menú
