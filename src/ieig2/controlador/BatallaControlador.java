@@ -2,12 +2,12 @@ package ieig2.controlador;
 
 import ieig2.modelo.*;
 import ieig2.vista.BatallaVistaConsola;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.charset.StandardCharsets;
 
+import javax.swing.*; // por si querés usar diálogos luego
 import java.io.IOException;
+import java.nio.charset.StandardCharsets; // (lo usás en Persistencia)
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class BatallaControlador {
@@ -51,18 +51,20 @@ public class BatallaControlador {
             vista.mostrarEstadoPersonajes(heroe, villano);
 
             // Opciones de consola en cada turno
-            String op = vista.pedirEntrada("Opciones: [A]vanzar | [G]uardar | [S]alir sin finalizar: ");
-            System.out.println("[DEBUG] Opción ingresada: " + op);
+            String op = vista.pedirEntrada("Opciones: [A]vanzar | [G]uardar | [C]argar | [S]alir sin finalizar: ");
             if (op != null) {
                 op = op.trim();
                 if (op.equalsIgnoreCase("G")) {
                     guardarPartidaManual();
+                } else if (op.equalsIgnoreCase("C")) {
+                    // corto el loop actual y voy a cargar desde archivo
+                    cargarPartidaYJugar();
+                    return;
                 } else if (op.equalsIgnoreCase("S")) {
                     vista.mostrarMensaje("Saliendo de la batalla sin finalizar.");
                     return; // corta el método sin llamar a finalizarBatalla
                 }
             }
-
         }
 
         finalizarBatalla(turnoActual);
@@ -90,12 +92,14 @@ public class BatallaControlador {
             vista.mostrarEstadoPersonajes(heroe, villano);
 
             // Opciones de consola en cada turno
-            String op = vista.pedirEntrada("Opciones: [A]vanzar | [G]uardar | [S]alir sin finalizar: ");
-            System.out.println("[DEBUG] Opción ingresada: " + op);
+            String op = vista.pedirEntrada("Opciones: [A]vanzar | [G]uardar | [C]argar | [S]alir sin finalizar: ");
             if (op != null) {
                 op = op.trim();
                 if (op.equalsIgnoreCase("G")) {
                     guardarPartidaManual();
+                } else if (op.equalsIgnoreCase("C")) {
+                    cargarPartidaYJugar();
+                    return;
                 } else if (op.equalsIgnoreCase("S")) {
                     vista.mostrarMensaje("Saliendo de la batalla sin finalizar.");
                     return; // corta el método sin llamar a finalizarBatalla
@@ -153,37 +157,83 @@ public class BatallaControlador {
         String ganadorNombre = heroe.estaVivo() ? heroe.getNombre() : villano.getNombre();
         vista.mostrarGanador(ganadorNombre, turno);
 
+        // --- Historial (modelo) ---
         String entrada = historial.crearEntradaBatalla(
                 heroe.getNombre(), villano.getNombre(), ganadorNombre, turno
         );
         historial.guardarBatalla(entrada);
 
+        // --- Persistencia de historial ---
         try {
             PersistenciaManager.guardarHistorial(historial);
         } catch (IOException e) {
             System.err.println("No se pudo guardar historial: " + e.getMessage());
         }
 
+        // Mostrar historial en pantalla
         String logHistorial = historial.obtenerHistorialComoString();
         vista.mostrarMensaje(logHistorial);
 
+        // --- Reporte Final ---
         String reporte = generarReporteFinal(heroe, villano, turno, historial);
         vista.mostrarMensaje(reporte);
+
+
+        try {
+        java.util.List<Personaje> pers = new java.util.ArrayList<>();
+        pers.add(heroe);
+        pers.add(villano);
+
+        PersistenciaManager.guardarPersonajes(
+            pers,
+            turno,                                // turnos de la batalla actual
+            (heroe.estaVivo() ? heroe.getNombre() : villano.getNombre()) // ganador
+        );
+
+        System.out.println("Se guardaron estadísticas en personajes.txt");
+        } catch (java.io.IOException e) {
+            System.err.println("No se pudo guardar personajes.txt: " + e.getMessage());
+        }
 
         vista.cerrarScanner();
     }
 
     public void guardarPartidaManual() {
-    System.out.println("[DEBUG] guardarPartidaManual() llamado. turno=" + turnoActual);
-    try {
-        PersistenciaManager.guardarPartida(heroe, villano, turnoActual);
-        System.out.println("[DEBUG] guardarPartidaManual() OK");
-        vista.mostrarMensaje("\nPartida guardada con éxito.\n");
-    } catch (IOException ex) {
-        System.out.println("[DEBUG] guardarPartidaManual() ERROR: " + ex.getMessage());
-        vista.mostrarMensaje("\nError al guardar partida: " + ex.getMessage() + "\n");
+        System.out.println("[DEBUG] guardarPartidaManual() llamado. turno=" + turnoActual);
+        try {
+            if (heroe == null || villano == null) {
+                vista.mostrarMensaje("\nNo hay batalla en curso para guardar.\n");
+                return;
+            }
+            PersistenciaManager.guardarPartida(heroe, villano, turnoActual);
+            System.out.println("[DEBUG] guardarPartidaManual() OK");
+            vista.mostrarMensaje("\nPartida guardada con éxito.\n");
+        } catch (IOException ex) {
+            System.out.println("[DEBUG] guardarPartidaManual() ERROR: " + ex.getMessage());
+            vista.mostrarMensaje("\nError al guardar partida: " + ex.getMessage() + "\n");
+        }
     }
-}
+
+    // ========= NUEVO: Cargar partida y reanudar =========
+    public void cargarPartidaYJugar() {
+        try {
+            PersistenciaManager.PartidaCargada pc = PersistenciaManager.cargarPartida();
+            if (pc == null) {
+                vista.mostrarMensaje("⚠️ No hay partida guardada para cargar.");
+                return;
+            }
+
+            // Recrea los personajes con los valores del archivo
+            Heroe h = new Heroe(pc.heroeNombre, pc.heroeVida, pc.heroeFuerza, pc.heroeDefensa, pc.heroeBendicion);
+            Villano v = new Villano(pc.villanoNombre, pc.villanoVida, pc.villanoFuerza, pc.villanoDefensa, pc.villanoBendicion);
+
+            vista.mostrarMensaje("\n📂 Partida restaurada. Turno guardado: " + pc.turno + "\n");
+            // Reanuda combatiendo con los objetos reconstruidos
+            iniciarBatallaCon(h, v);
+        } catch (IOException e) {
+            vista.mostrarMensaje("❌ Error al cargar partida: " + e.getMessage());
+        }
+    }
 
     private String nombreMostrar(String nombreBase, Apodo apodo) {
         if (apodo == null || apodo.getValor() == null || apodo.getValor().isBlank()) return nombreBase;
