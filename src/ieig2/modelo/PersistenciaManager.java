@@ -190,25 +190,77 @@ public class PersistenciaManager {
     // ================================================================
 
     /** Guarda la lista de personajes permanentes. */
-    public static void guardarPersonajes(List<Personaje> personajes) throws IOException {
-        Objects.requireNonNull(personajes, "personajes no puede ser null");
-        try (BufferedWriter w = Files.newBufferedWriter(Paths.get(PERSONAJES_FILE), StandardCharsets.UTF_8)) {
-            for (Personaje p : personajes) {
-                String tipo;
-                if (p instanceof Heroe) tipo = "HEROE";
-                else if (p instanceof Villano) tipo = "VILLANO";
-                else tipo = "PERSONAJE";
+    // Nuevo método: guarda personajes + bloque estadístico con turnos/ganador reales
+public static void guardarPersonajes(
+        java.util.List<Personaje> personajes,
+        int turnosDeEstaBatalla,
+        String ganadorNombre
+) throws IOException {
+    Objects.requireNonNull(personajes, "personajes no puede ser null");
+    try (BufferedWriter w = Files.newBufferedWriter(Paths.get(PERSONAJES_FILE), StandardCharsets.UTF_8)) {
+        // 1) Línea por personaje (lo mismo que antes)
+        for (Personaje p : personajes) {
+            String tipo = (p instanceof Heroe) ? "HEROE" :
+                          (p instanceof Villano) ? "VILLANO" : "PERSONAJE";
+            w.write(tipo + ";" +
+                    sanitize(p.getNombre()) + ";" +
+                    p.getVida() + ";" +
+                    p.fuerza + ";" +
+                    p.defensa + ";" +
+                    p.bendicion);
+            w.newLine();
+        }
 
-                w.write(tipo + ";" +
-                        sanitize(p.getNombre()) + ";" +
-                        p.getVida() + ";" +
-                        p.fuerza + ";" +
-                        p.defensa + ";" +
-                        p.bendicion);
-                w.newLine();
+        // 2) Bloque estadístico (con datos reales que nos pasan)
+        if (personajes.size() >= 2) {
+            Personaje p1 = personajes.get(0);
+            Personaje p2 = personajes.get(1);
+
+            w.write("-----"); w.newLine();
+
+            // Mayor daño en un ataque (tolerante si el getter no existe)
+            int md1 = safeMayorDanio(p1);
+            int md2 = safeMayorDanio(p2);
+            if (md1 >= md2) {
+                w.write("MAYOR_DAÑO: " + md1 + " (" + sanitize(p1.getNombre()) + ")"); w.newLine();
+            } else {
+                w.write("MAYOR_DAÑO: " + md2 + " (" + sanitize(p2.getNombre()) + ")"); w.newLine();
             }
+
+            // Batalla más larga: usamos los turnos reales y el ganador que nos pasaron
+            w.write("BATALLA_MAS_LARGA: " + turnosDeEstaBatalla +
+                    " turnos (ganador: " + sanitize(ganadorNombre) + ")"); w.newLine();
+
+            // Armas invocadas (cantidad de tipos invocados)
+            w.write("ARMAS_INVOCADAS: " +
+                    sanitize(p1.getNombre()) + "=" + (p1.getArmasInvocadas() == null ? 0 : p1.getArmasInvocadas().size()) + ", " +
+                    sanitize(p2.getNombre()) + "=" + (p2.getArmasInvocadas() == null ? 0 : p2.getArmasInvocadas().size())); w.newLine();
+
+            // Supremos
+            w.write("ATAQUES_SUPREMOS: " +
+                    sanitize(p1.getNombre()) + "=" + p1.getSupremosUsados() + ", " +
+                    sanitize(p2.getNombre()) + "=" + p2.getSupremosUsados()); w.newLine();
+
+            // % victorias (para esta ejecución simple: 100% para el tipo ganador)
+            boolean ganoHeroe = (p1 instanceof Heroe && p1.getNombre().equals(ganadorNombre))
+                             || (p2 instanceof Heroe && p2.getNombre().equals(ganadorNombre));
+            int porcHeroe = ganoHeroe ? 100 : 0;
+            int porcVillano = 100 - porcHeroe;
+            w.write(String.format("PORCENTAJE_VICTORIAS: HEROE=%d%%, VILLANO=%d%%", porcHeroe, porcVillano)); w.newLine();
         }
     }
+}
+
+// helper tolerante si aún no tenés getMayorDanio() en todos
+private static int safeMayorDanio(Personaje p) {
+    try {
+        Integer v = p.getMayorDanio();
+        return (v == null) ? 0 : v;
+    } catch (Throwable t) {
+        return 0;
+    }
+}
+
 
     /** DTO para reconstruir personajes sin acoplar a constructores concretos. */
     public static class PersonajeDTO {
